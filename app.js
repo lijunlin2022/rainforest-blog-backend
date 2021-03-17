@@ -11,6 +11,7 @@ const redisStore = require('koa-redis')
 const blogs = require('./routes/blogs')
 const users = require('./routes/users')
 
+const { REDIS_CONF } = require('./conf/db')
 // error handler
 onerror(app)
 
@@ -40,7 +41,7 @@ app.use(session({
   },
   // 配置 redis
   store: redisStore({
-    all: '127.0.0.1:6379'
+    all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
   })
 }))
 
