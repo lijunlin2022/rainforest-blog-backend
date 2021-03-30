@@ -16,3 +16,6 @@ CREATE TABLE users(
   realname VARCHAR(255),
   PRIMARY KEY(id)
 );
+
+INSERT INTO blogs VALUES(1, '测试标题1', '测试内容1', 1617099756042, '测试作者1');
+INSERT INTO blogs VALUES(2, '测试标题2', '测试内容2', 1617099802160, '测试作者2');
