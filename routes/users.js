@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 
-router.prefix('/api/users')
+router.prefix('/api/user')
 
 router.post('/login', async function (ctx, next) {
   const { username, password } = ctx.request.body

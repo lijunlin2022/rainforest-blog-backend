@@ -7,7 +7,7 @@ const {
   delBlog
 } = require("../controller/blogs")
 const { SuccessModel, ErrorModel } = require('../model/resModel')
-router.prefix('/api/blogs')
+router.prefix('/api/blog')
 
 router.get('/list', async (ctx, next) => {
   const author = ctx.query.author
