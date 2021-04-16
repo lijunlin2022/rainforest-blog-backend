@@ -2,7 +2,7 @@ const xss = require('xss')
 const { exec } = require('../db/mysql')
 
 const getList = async (author, keyword) => {
-    let sql = `select * from blogs where 1=1 `
+    let sql = `select id, title, abstract, createtime, author from blogs where 1=1 `
     if (author) {
         sql += `and author='${author}' `
     }
@@ -22,15 +22,16 @@ const getDetail = async (id) => {
 
 const newBlog = async (blogData = {}) => {
     // blogData 是一个博客对象，包含 title content author 属性
+    console.log(JSON.stringify(blogData))
     const title = xss(blogData.title)
-    // console.log('title is', title)
+    const abstract = xss(blogData.abstract)
     const content = xss(blogData.content)
     const author = blogData.author
     const createTime = Date.now()
 
     const sql = `
-        insert into blogs (title, content, createtime, author)
-        values ('${title}', '${content}', ${createTime}, '${author}');
+        insert into blogs (title, abstract, content, createtime, author)
+        values ('${title}', '${abstract}', '${content}', ${createTime}, '${author}');
     `
 
     const insertData = await exec(sql)
@@ -44,10 +45,11 @@ const updateBlog = async (id, blogData = {}) => {
     // blogData 是一个博客对象，包含 title content 属性
 
     const title = xss(blogData.title)
+    const abstract = xss(blogData.abstract)
     const content = xss(blogData.content)
 
     const sql = `
-        update blogs set title='${title}', content='${content}' where id=${id}
+        update blogs set title='${title}', abstract='${abstract}', content='${content}' where id=${id}
     `
 
     const updateData = await exec(sql)

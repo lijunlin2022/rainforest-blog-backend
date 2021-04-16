@@ -7,7 +7,7 @@ const {
   delBlog
 } = require("../controller/blogs")
 const { SuccessModel, ErrorModel } = require('../model/resModel')
-router.prefix('/api/blog')
+router.prefix('/blog')
 
 router.get('/list', async (ctx, next) => {
   const author = ctx.query.author
@@ -23,6 +23,7 @@ router.get('/detail', async (ctx, next) => {
 })
 
 router.post('/new', async (ctx, next) => {
+  console.log(ctx.request.body)
   const body = ctx.request.body
   body.author = ctx.session.username
   const data = await newBlog(body)
