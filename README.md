@@ -19,15 +19,15 @@
 
 blogs:
 
-| id   | title       | content       | createtime | author      |
-| ---- | ----------- | ------------- | ---------- | ----------- |
-| int  | varchar(32) | varchar(3000) | bigint(20) | varchar(32) |
+| id   | title        | abstract      | cover         | content | createtime | author      |
+| ---- | ------------ | ------------- | ------------- | ------- | ---------- | ----------- |
+| int  | varchar(255) | varchar(3000) | varchar(1000) | text    | bigint(20) | varchar(32) |
 
 users:
 
-| id   | username    | password    | realname    |
-| ---- | ----------- | ----------- | ----------- |
-| int  | varchar(32) | varchar(32) | varchar(32) |
+| id   | username     | password     | realname     |
+| ---- | ------------ | ------------ | ------------ |
+| int  | varchar(255) | varchar(255) | varchar(255) |
 
 ## 规范：
 
@@ -75,5 +75,5 @@ README文档、代码开发文档、软件使用文档及其他项目相关的�
   
 ```shell
   $ git commit -m "[merge] Merge from dev-zsb to dev"
-  ```
+```
 
