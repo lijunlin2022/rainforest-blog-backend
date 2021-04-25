@@ -1,5 +1,5 @@
 const xss = require('xss')
-const { exec } = require('../db/mysql')
+const { exec, escape } = require('../db/mysql')
 
 const getList = async (author, keyword) => {
     let sql = `select id, title, abstract, cover, createtime, author from blogs where 1=1 `
@@ -30,10 +30,13 @@ const newBlog = async (blogData = {}) => {
     const author = blogData.author
     const createTime = Date.now()
 
-    const sql = `
-        insert into blogs (title, abstract, cover, content, createtime, author)
-        values ('${title}', '${abstract}', '${cover}', '${content}', ${createTime}, '${author}');
-    `
+    const sql = "insert into blogs (title, abstract, cover, content, createtime, author) values ("
+                + escape(title) + ","
+                + escape(abstract) + ","
+                + escape(cover) + ","
+                + escape(content) + ","
+                + escape(createTime) + ","
+                + escape(author) + ")"
 
     const insertData = await exec(sql)
     return {
@@ -48,11 +51,13 @@ const updateBlog = async (id, blogData = {}) => {
     const title = xss(blogData.title)
     const abstract = xss(blogData.abstract)
     const cover = xss(blogData.cover)
-    const content = xss(blogData.content)
+    const content = xss((blogData.content))
 
-    const sql = `
-        update blogs set title='${title}', abstract='${abstract}', cover='${cover}', content='${content}' where id=${id}
-    `
+    const sql = "update blogs set title=" + escape(title) + ","
+                + "abstract=" + escape(abstract) + ","
+                + "cover=" + escape(cover) + ","
+                + "content=" + escape(content)
+                + "where id=" + escape(id)
 
     const updateData = await exec(sql)
     if (updateData.affectedRows > 0) {
