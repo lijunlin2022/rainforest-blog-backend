@@ -6,6 +6,7 @@
     "start": "node bin/www",
     "dev": "cross-env NODE_ENV=dev ./node_modules/.bin/nodemon bin/www",
     "prd": "cross-env NODE_ENV=production pm2 start bin/www.js",
+    "stop": "cross-env NODE_ENV=production pm2 stop bin/www.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

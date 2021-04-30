@@ -14,6 +14,13 @@ const getList = async (author, keyword) => {
     return await exec(sql)
 }
 
+const getListByPage = async (current, size) => {
+    current *= size;
+    let sql = "select id, title, abstract, cover, createtime, author from blogs order by createtime desc "
+              + `limit ${current}, ${size}`
+    return exec(sql);
+}
+
 const getDetail = async (id) => {
     const sql = `select * from blogs where id='${id}'`
     const rows = await exec(sql)
@@ -47,18 +54,16 @@ const newBlog = async (blogData = {}) => {
 const updateBlog = async (id, blogData = {}) => {
     // id 就是要更新博客的 id
     // blogData 是一个博客对象，包含 title content 属性
-
     const title = xss(blogData.title)
     const abstract = xss(blogData.abstract)
     const cover = xss(blogData.cover)
-    const content = xss((blogData.content))
-
-    const sql = "update blogs set title=" + escape(title) + ","
+    const content = xss(blogData.content)
+    const sql = "update blogs set "
+                + "title=" + escape(title) + ","
                 + "abstract=" + escape(abstract) + ","
                 + "cover=" + escape(cover) + ","
                 + "content=" + escape(content)
-                + "where id=" + escape(id)
-
+                + " where id=" + id
     const updateData = await exec(sql)
     if (updateData.affectedRows > 0) {
         return true
@@ -78,6 +83,7 @@ const delBlog = async (id, author) => {
 
 module.exports = {
     getList,
+    getListByPage,
     getDetail,
     newBlog,
     updateBlog,
