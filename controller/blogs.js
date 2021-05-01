@@ -14,6 +14,11 @@ const getList = async (author, keyword) => {
     return await exec(sql)
 }
 
+const getHotList = async () => {
+    let sql = "select id, title, createtime, author from blogs where hot = true"
+    return await exec(sql)
+}
+
 const getListByPage = async (current, size) => {
     current *= size;
     let sql = "select id, title, abstract, cover, createtime, author from blogs order by createtime desc "
@@ -35,15 +40,17 @@ const newBlog = async (blogData = {}) => {
     const cover = xss(blogData.cover)
     const content = xss(blogData.content)
     const author = blogData.author
+    const hot = blogData.hot
     const createTime = Date.now()
 
-    const sql = "insert into blogs (title, abstract, cover, content, createtime, author) values ("
+    const sql = "insert into blogs (title, abstract, cover, content, createtime, author, hot) values ("
                 + escape(title) + ","
                 + escape(abstract) + ","
                 + escape(cover) + ","
                 + escape(content) + ","
                 + escape(createTime) + ","
-                + escape(author) + ")"
+                + escape(author) + ","
+                + escape(hot) + ")"
 
     const insertData = await exec(sql)
     return {
@@ -83,6 +90,7 @@ const delBlog = async (id, author) => {
 
 module.exports = {
     getList,
+    getHotList,
     getListByPage,
     getDetail,
     newBlog,

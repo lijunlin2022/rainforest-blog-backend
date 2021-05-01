@@ -1,6 +1,7 @@
 const router = require('koa-router')()
 const {
   getList,
+  getHotList,
   getListByPage,
   getDetail,
   newBlog,
@@ -14,6 +15,11 @@ router.get('/list', async (ctx, next) => {
   const author = ctx.query.author
   const keyword = ctx.query.keyword
   const listData = await getList(author, keyword)
+  ctx.body = new SuccessModel(listData)
+})
+
+router.get('/hot', async (ctx, next) => {
+  const listData = await getHotList()
   ctx.body = new SuccessModel(listData)
 })
 
