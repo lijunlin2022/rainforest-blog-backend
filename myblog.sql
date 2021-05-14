@@ -8,7 +8,7 @@ CREATE TABLE blogs(
   content TEXT,
   createtime BIGINT(20),
   author VARCHAR(255),
-  hot BOOLEAN,
+  hot TINYINT(1),
   PRIMARY KEY(id)
 );
 
