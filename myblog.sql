@@ -8,7 +8,8 @@ CREATE TABLE blogs(
   content TEXT,
   createtime BIGINT(20),
   author VARCHAR(255),
-  hot TINYINT(1),
+  ishot TINYINT(1),
+  isinterface TINYINT(1),
   PRIMARY KEY(id)
 );
 

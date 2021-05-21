@@ -1,23 +1,28 @@
-const xss = require('xss')
-const { exec, escape } = require('../db/mysql')
+const xss = require("xss");
+const { exec, escape } = require("../db/mysql");
 
 const getList = async (author, keyword) => {
-    let sql = `select id, title, abstract, cover, createtime, author from blogs where 1=1 `
+    let sql = "select id, title, abstract, cover, createtime, author from blogs where 1=1 ";
     if (author) {
-        sql += `and author='${author}' `
+        sql += `and author='${author}' `;
     }
     if (keyword) {
-        sql += `and title like '%${keyword}%' `
+        sql += `and title like '%${keyword}%' `;
     }
-    sql += `order by createtime desc;`
+    sql += `order by createtime desc`;
 
-    return await exec(sql)
+    return await exec(sql);
 }
 
 const getHotList = async () => {
-    let sql = "select id, title, createtime, author from blogs where hot = true"
+    let sql = "select id, title, createtime, author from blogs where ishot = true"
     return await exec(sql)
 }
+
+const getIdSetOfInterfaces = async () => {
+    let sql = "select id, title from blogs where isinterface = true";
+    return await exec(sql);
+};
 
 const getListByPage = async (current, size) => {
     current *= size;
@@ -34,23 +39,25 @@ const getDetail = async (id) => {
 
 const newBlog = async (blogData = {}) => {
     // blogData 是一个博客对象，包含 title content author 属性
-    console.log(JSON.stringify(blogData))
-    const title = xss(blogData.title)
-    const abstract = xss(blogData.abstract)
-    const cover = xss(blogData.cover)
-    const content = xss(blogData.content)
-    const author = blogData.author
-    const hot = blogData.hot
-    const createTime = Date.now()
+    console.log(JSON.stringify(blogData));
+    const title = xss(blogData.title);
+    const abstract = xss(blogData.abstract);
+    const cover = xss(blogData.cover);
+    const content = xss(blogData.content);
+    const author = blogData.author;
+    const ishot = blogData.ishot;
+    const isinterface = blogData.isinterface;
+    const createTime = Date.now();
 
-    const sql = "insert into blogs (title, abstract, cover, content, createtime, author, hot) values ("
+    const sql = "insert into blogs (title, abstract, cover, content, createtime, author, ishot, isinterface) values ("
                 + escape(title) + ","
                 + escape(abstract) + ","
                 + escape(cover) + ","
                 + escape(content) + ","
                 + escape(createTime) + ","
                 + escape(author) + ","
-                + escape(hot) + ")"
+                + ishot + ","
+                + isinterface + ")";
 
     const insertData = await exec(sql)
     return {
@@ -61,21 +68,26 @@ const newBlog = async (blogData = {}) => {
 const updateBlog = async (id, blogData = {}) => {
     // id 就是要更新博客的 id
     // blogData 是一个博客对象，包含 title content 属性
-    const title = xss(blogData.title)
-    const abstract = xss(blogData.abstract)
-    const cover = xss(blogData.cover)
-    const content = xss(blogData.content)
+    const title = xss(blogData.title);
+    const abstract = xss(blogData.abstract);
+    const cover = xss(blogData.cover);
+    const content = xss(blogData.content);
+    const ishot = blogData.ishot;
+    const isinterface = blogData.isinterface;
+
     const sql = "update blogs set "
-                + "title=" + escape(title) + ","
-                + "abstract=" + escape(abstract) + ","
-                + "cover=" + escape(cover) + ","
-                + "content=" + escape(content)
-                + " where id=" + id
-    const updateData = await exec(sql)
+                + "title = " + escape(title) + ","
+                + "abstract = " + escape(abstract) + ","
+                + "cover = " + escape(cover) + ","
+                + "content = " + escape(content) + ","
+                + "ishot = " + ishot + ","
+                + "isinterface = " + isinterface
+                + " where id = " + id;
+    const updateData = await exec(sql);
     if (updateData.affectedRows > 0) {
-        return true
+        return true;
     }
-    return false
+    return false;
 }
 
 const delBlog = async (id, author) => {
@@ -91,6 +103,7 @@ const delBlog = async (id, author) => {
 module.exports = {
     getList,
     getHotList,
+    getIdSetOfInterfaces,
     getListByPage,
     getDetail,
     newBlog,
