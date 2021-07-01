@@ -1,40 +1,24 @@
 const router = require('koa-router')()
 const {
   getList,
-  getHotList,
-  getIdSetOfInterfaces,
-  getListByPage,
-  getDetail,
-  newBlog,
-  updateBlog,
-  delBlog
+  getLatestUpdatedByPage,
 } = require("../controller/blogs")
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 router.prefix('/blog')
 
 router.get('/list', async (ctx, next) => {
-  const author = ctx.query.author
-  const keyword = ctx.query.keyword
-  const listData = await getList(author, keyword)
-  ctx.body = new SuccessModel(listData)
-})
+  const author = ctx.query.author;
+  const keyword = ctx.query.keyword;
+  const listData = await getList(author, keyword);
+  ctx.body = new SuccessModel(listData);
+});
 
-router.get('/hot', async (ctx, next) => {
-  const listData = await getHotList()
-  ctx.body = new SuccessModel(listData)
-})
-
-router.get("/interfaces", async (ctx, next) => {
-  const idSet = await getIdSetOfInterfaces();
-  ctx.body = new SuccessModel(idSet);
-})
-
-router.get('/listByPage', async (ctx, next) => {
-  const current = ctx.query.current
-  const size = ctx.query.size
-  const listData = await getListByPage(current, size)
-  ctx.body = new SuccessModel(listData)
-})
+router.get('/page', async (ctx, next) => {
+  const current = ctx.query.current;
+  const size = ctx.query.size;
+  const listData = await getLatestUpdatedByPage(current, size);
+  ctx.body = new SuccessModel(listData);
+});
 
 router.get('/detail', async (ctx, next) => {
   const id = ctx.query.id

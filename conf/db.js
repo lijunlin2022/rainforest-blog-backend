@@ -11,7 +11,7 @@ if (env === 'dev') {
         user: 'root',
         password: '123456',
         port: '3306',
-        database: 'myblog'
+        database: 'rainforest'
     }
 
     // redis
@@ -28,7 +28,7 @@ if (env === 'production') {
         user: 'root',
         password: 'tencent-cloud-server-123456',
         port: '3306',
-        database: 'myblog'
+        database: 'rainforest'
     }
 
     // redis

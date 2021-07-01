@@ -2,34 +2,28 @@ const xss = require("xss");
 const { exec, escape } = require("../db/mysql");
 
 const getList = async (author, keyword) => {
-    let sql = "select id, title, abstract, cover, createtime, author from blogs where 1=1 ";
+    let sql = `select * from blogs where 1 = 1 `;
     if (author) {
         sql += `and author='${author}' `;
     }
     if (keyword) {
         sql += `and title like '%${keyword}%' `;
     }
-    sql += `order by createtime desc`;
-
+    sql += `order by created_time desc`;
     return await exec(sql);
 }
 
-const getHotList = async () => {
-    let sql = "select id, title, createtime, author from blogs where ishot = true"
-    return await exec(sql)
-}
+const getLatestUpdatedByPage = async (current, size) => {
+    current *= size;
+    let sql = `select * from blogs order by updated_time desc `
+            + `limit ${current}, ${size}`
+    return exec(sql);
+};
 
 const getIdSetOfInterfaces = async () => {
     let sql = "select id, title from blogs where isinterface = true";
     return await exec(sql);
 };
-
-const getListByPage = async (current, size) => {
-    current *= size;
-    let sql = "select id, title, abstract, cover, createtime, author from blogs order by createtime desc "
-              + `limit ${current}, ${size}`
-    return exec(sql);
-}
 
 const getDetail = async (id) => {
     const sql = `select * from blogs where id='${id}'`
@@ -102,11 +96,5 @@ const delBlog = async (id, author) => {
 
 module.exports = {
     getList,
-    getHotList,
-    getIdSetOfInterfaces,
-    getListByPage,
-    getDetail,
-    newBlog,
-    updateBlog,
-    delBlog
+    getLatestUpdatedByPage,
 }
