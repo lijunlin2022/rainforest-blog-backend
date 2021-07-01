@@ -1,29 +1,27 @@
 const router = require('koa-router')()
 const {
   getList,
-  getLatestUpdatedByPage,
+  getDetail,
 } = require("../controller/blogs")
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 router.prefix('/blog')
 
 router.get('/list', async (ctx, next) => {
+  const pid = ctx.query.pid;
   const author = ctx.query.author;
   const keyword = ctx.query.keyword;
-  const listData = await getList(author, keyword);
-  ctx.body = new SuccessModel(listData);
-});
-
-router.get('/page', async (ctx, next) => {
   const current = ctx.query.current;
   const size = ctx.query.size;
-  const listData = await getLatestUpdatedByPage(current, size);
+  const listData = await getList(pid, current, size, author, keyword);
   ctx.body = new SuccessModel(listData);
 });
 
 router.get('/detail', async (ctx, next) => {
-  const id = ctx.query.id
-  const data = await getDetail(id)
-  ctx.body = new SuccessModel(data)
+  const id = ctx.query.id;
+  const pid = ctx.query.pid;
+  const title = ctx.query.title;
+  const data = await getDetail(id, pid, title);
+  ctx.body = new SuccessModel(data);
 })
 
 router.post('/new', async (ctx, next) => {
@@ -54,4 +52,4 @@ router.post('/del', async (ctx, next) => {
   }
 })
 
-module.exports = router
+module.exports = router;

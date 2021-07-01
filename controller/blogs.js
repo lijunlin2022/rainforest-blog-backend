@@ -1,34 +1,46 @@
 const xss = require("xss");
 const { exec, escape } = require("../db/mysql");
 
-const getList = async (author, keyword) => {
-    let sql = `select * from blogs where 1 = 1 `;
+/**
+ * @param {Number} pid
+ * @param {Number} current
+ * @param {Number} size
+ * @param {String} author
+ * @param {String} keyword
+ * @returns 
+ */
+const getList = async (pid, current, size, author, keyword) => {
+    let sql = `select id, title, abstract, updated_time, created_time from blogs where 1 = 1 `;
+    if (pid) {
+        sql += `and notebook_id = ${pid} `;
+    }
     if (author) {
-        sql += `and author='${author}' `;
+        sql += `and author = '${author}' `;
     }
     if (keyword) {
         sql += `and title like '%${keyword}%' `;
     }
-    sql += `order by created_time desc`;
+    sql += `order by updated_time desc `;
+    if (current && size) {
+        current *= size;
+        sql += `limit ${current}, ${size}`;
+    }
     return await exec(sql);
 }
 
-const getLatestUpdatedByPage = async (current, size) => {
-    current *= size;
-    let sql = `select * from blogs order by updated_time desc `
-            + `limit ${current}, ${size}`
-    return exec(sql);
-};
-
-const getIdSetOfInterfaces = async () => {
-    let sql = "select id, title from blogs where isinterface = true";
-    return await exec(sql);
-};
-
-const getDetail = async (id) => {
-    const sql = `select * from blogs where id='${id}'`
-    const rows = await exec(sql)
-    return rows[0]
+const getDetail = async (id, pid, title) => {
+    let sql = `select * from blogs where 1 = 1 `;
+    if (id) {
+        sql += `and id = ${id} `;
+    }
+    if (pid) {
+        sql += `and notebook_id = ${pid} `;
+    }
+    if (title) {
+        sql += `and title = '${title}'`;
+    }
+    const rows = await exec(sql);
+    return rows[0];
 }
 
 const newBlog = async (blogData = {}) => {
@@ -96,5 +108,5 @@ const delBlog = async (id, author) => {
 
 module.exports = {
     getList,
-    getLatestUpdatedByPage,
-}
+    getDetail,
+};

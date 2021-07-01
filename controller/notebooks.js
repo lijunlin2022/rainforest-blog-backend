@@ -1,19 +1,25 @@
 const xss = require("xss");
 const { exec, escape } = require("../db/mysql");
 
-const getList = async () => {
-    let sql = `select * from notebooks order by updated_time desc`;
+/**
+ * @param {Number} current
+ * @param {Number} size
+ * @param {String} keyword
+ * @returns
+ */
+const getList = async (current, size, keyword) => {
+    let sql = `select * from notebooks where 1 = 1 `;
+    if (keyword) {
+      sql += `and name like '%${keyword}%' `;
+    }
+    sql += `order by updated_time desc `;
+    if (current && size) {
+        current *= size;
+        sql += `limit ${current}, ${size}`;
+    }
     return await exec(sql);
 };
 
-const getLatestUpdatedByPage = async (current, size) => {
-  current *= size;
-  let sql = `select * from notebooks order by updated_time desc `
-          + `limit ${current}, ${size}`;
-  return exec(sql);
-}
-
 module.exports = {
   getList,
-  getLatestUpdatedByPage
 };
