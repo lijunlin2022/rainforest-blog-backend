@@ -20,6 +20,13 @@ const getList = async (current, size, keyword) => {
     return await exec(sql);
 };
 
+const getDetail = async (id) => {
+  let sql = `select * from notebooks where id = ${id}`;
+  const rows = await exec(sql);
+  return rows[0];
+}
+
 module.exports = {
   getList,
+  getDetail,
 };
