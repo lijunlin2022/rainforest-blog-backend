@@ -28,6 +28,12 @@ const getList = async (pid, current, size, author, keyword) => {
     return await exec(sql);
 }
 
+/**
+ * @param {Number} id
+ * @param {Number} pid
+ * @param {String} title
+ * @returns
+ */
 const getDetail = async (id, pid, title) => {
     let sql = `select * from blogs where 1 = 1 `;
     if (id) {
@@ -43,52 +49,50 @@ const getDetail = async (id, pid, title) => {
     return rows[0];
 }
 
-const newBlog = async (blogData = {}) => {
-    // blogData 是一个博客对象，包含 title content author 属性
-    console.log(JSON.stringify(blogData));
+/**
+ * @param {Object} blogData
+ * @returns 
+ */
+const add = async (blogData = {}) => {
+    const pid = blogData.pid;
     const title = xss(blogData.title);
     const abstract = xss(blogData.abstract);
-    const cover = xss(blogData.cover);
     const content = xss(blogData.content);
+    const created_time = Date.now();
+    const updated_time = Date.now();
     const author = blogData.author;
-    const ishot = blogData.ishot;
-    const isinterface = blogData.isinterface;
-    const createTime = Date.now();
 
-    const sql = "insert into blogs (title, abstract, cover, content, createtime, author, ishot, isinterface) values ("
+    let sql = `insert into blogs (notebook_id, title, abstract, content, created_time, updated_time, author) values (`
+                + `${pid}` + ","
                 + escape(title) + ","
                 + escape(abstract) + ","
-                + escape(cover) + ","
                 + escape(content) + ","
-                + escape(createTime) + ","
-                + escape(author) + ","
-                + ishot + ","
-                + isinterface + ")";
-
-    const insertData = await exec(sql)
+                + `${created_time}` + ","
+                + `${updated_time}` + ","
+                + escape(author) + ")";
+    const insertData = await exec(sql);
     return {
-        id: insertData.insertId
-    }
+        id: insertData.insertId,
+    };
 }
 
-const updateBlog = async (id, blogData = {}) => {
-    // id 就是要更新博客的 id
-    // blogData 是一个博客对象，包含 title content 属性
+/**
+ * @param {Number} id
+ * @param {Object} blogData
+ * @returns 
+ */
+const update = async (id, blogData = {}) => {
     const title = xss(blogData.title);
     const abstract = xss(blogData.abstract);
-    const cover = xss(blogData.cover);
     const content = xss(blogData.content);
-    const ishot = blogData.ishot;
-    const isinterface = blogData.isinterface;
+    const updated_time = Date.now();
 
-    const sql = "update blogs set "
-                + "title = " + escape(title) + ","
-                + "abstract = " + escape(abstract) + ","
-                + "cover = " + escape(cover) + ","
-                + "content = " + escape(content) + ","
-                + "ishot = " + ishot + ","
-                + "isinterface = " + isinterface
-                + " where id = " + id;
+    let sql = `update blogs set `
+                + "title=" + escape(title) + ","
+                + "abstract=" + escape(abstract) + ","
+                + "content=" + escape(content) + ","
+                + `updated_time=${updated_time} `
+                + "where id=" + id;
     const updateData = await exec(sql);
     if (updateData.affectedRows > 0) {
         return true;
@@ -109,4 +113,6 @@ const delBlog = async (id, author) => {
 module.exports = {
     getList,
     getDetail,
+    add,
+    update,
 };

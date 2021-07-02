@@ -1,8 +1,10 @@
-const router = require('koa-router')()
+const router = require('koa-router')();
 const {
   getList,
   getDetail,
-} = require("../controller/blogs")
+  add,
+  update,
+} = require("../controller/blogs");
 const { SuccessModel, ErrorModel } = require('../model/resModel')
 router.prefix('/blog')
 
@@ -22,24 +24,22 @@ router.get('/detail', async (ctx, next) => {
   const title = ctx.query.title;
   const data = await getDetail(id, pid, title);
   ctx.body = new SuccessModel(data);
-})
+});
 
-router.post('/new', async (ctx, next) => {
-  console.log(ctx.request.body)
-  const body = ctx.request.body
-  body.author = ctx.session.username
-  const data = await newBlog(body)
-  ctx.body = new SuccessModel(data)
-})
+router.post("/new" ,async (ctx, next) => {
+  const body = ctx.request.body;
+  const data = await add(body);
+  ctx.body = new SuccessModel(data);
+});
 
 router.post('/update', async (ctx, next) => {
-  const val = await updateBlog(ctx.query.id, ctx.request.body)
+  const val = await update(ctx.query.id, ctx.request.body);
   if (val) {
-      ctx.body = new SuccessModel()
+      ctx.body = new SuccessModel();
   } else {
-      ctx.body = new ErrorModel('更新博客失败')
+      ctx.body = new ErrorModel("更新博客失败");
   }
-})
+});
 
 router.post('/del', async (ctx, next) => {
   const id = ctx.query.id
