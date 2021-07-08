@@ -1,12 +1,6 @@
 class BaseModel {
-  constructor(data, message) {
-    // 为了兼容传 对象 和 字符串
-    // 如果只传了字符串, 第一个参数为 data, 赋值给 message
-    if (typeof data === "string") {
-      this.message = data;
-      data = null;
-      message = null;
-    }
+  constructor(code, data, message) {
+    this.code = code;
     if (data) {
       this.data = data;
     }
@@ -17,16 +11,32 @@ class BaseModel {
 }
 
 class SuccessModel extends BaseModel {
-  constructor(data, message) {
-    super(data, message);
-    this.code = 200;
+  constructor(code, data, message) {
+    // 如果只有 data 和 message
+    if (typeof code === "object") {
+      super(200, code, data);
+    }
+    // 如果只有 message
+    else if (typeof code === "string") {
+      super(200, null, code);
+    } else {
+      super(code, data, message);
+    }
   }
 }
 
 class ErrorModel extends BaseModel {
-  constructor(data, message) {
-    super(data, message);
-    this.code = 500;
+  constructor(code, data, message) {
+    // 如果只有 data 和 message
+    if (typeof code === "object") {
+      super(500, code, data);
+    }
+    // 如果只有 message
+    else if (typeof code === "string") {
+      super(500, null, code);
+    } else {
+      super(code, data, message);
+    }
   }
 }
 

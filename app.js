@@ -5,8 +5,9 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const session = require('koa-generic-session')
-const redisStore = require('koa-redis')
+
+const session = require('koa-generic-session');
+const redisStore = require('koa-redis');
 
 const notebooks = require("./routes/notebooks");
 const blogs = require('./routes/blogs')
@@ -32,28 +33,28 @@ app.use(async (ctx, next) => {
 })
 
 // session 配置
-app.keys = ["Wx12_45R#sdsd_$"]
+app.keys = ["Wx12_45R#sdsd_$"];
 app.use(session({
   // 配置 cookie
   cookie: {
     path: '/',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 6 * 60 * 60 * 1000
   },
   // 配置 redis
   store: redisStore({
     all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
   })
-}))
+}));
 
 // routes
-app.use(notebooks.routes(), notebooks.allowedMethods())
-app.use(blogs.routes(), blogs.allowedMethods())
-app.use(users.routes(), users.allowedMethods())
+app.use(notebooks.routes(), notebooks.allowedMethods());
+app.use(blogs.routes(), blogs.allowedMethods());
+app.use(users.routes(), users.allowedMethods());
 
 // error-handling
 app.on('error', (err, ctx) => {
   console.error('server error', err, ctx)
 });
 
-module.exports = app
+module.exports = app;

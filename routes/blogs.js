@@ -1,14 +1,15 @@
-const router = require('koa-router')();
+const router = require("koa-router")();
+const loginCheck = require("../middleware/loginCheck");
 const {
   getList,
   getDetail,
   add,
   update,
 } = require("../controller/blogs");
-const { SuccessModel, ErrorModel } = require('../model/resModel')
-router.prefix('/blog')
+const { SuccessModel, ErrorModel } = require("../model/resModel");
+router.prefix("/blog");
 
-router.get('/list', async (ctx, next) => {
+router.get("/list", async (ctx, next) => {
   const pid = ctx.query.pid;
   const author = ctx.query.author;
   const keyword = ctx.query.keyword;
@@ -18,7 +19,7 @@ router.get('/list', async (ctx, next) => {
   ctx.body = new SuccessModel(listData);
 });
 
-router.get('/detail', async (ctx, next) => {
+router.get("/detail", async (ctx, next) => {
   const id = ctx.query.id;
   const pid = ctx.query.pid;
   const title = ctx.query.title;
@@ -26,13 +27,13 @@ router.get('/detail', async (ctx, next) => {
   ctx.body = new SuccessModel(data);
 });
 
-router.post("/new" ,async (ctx, next) => {
+router.post("/new", loginCheck, async (ctx, next) => {
   const body = ctx.request.body;
   const data = await add(body);
   ctx.body = new SuccessModel(data);
 });
 
-router.post('/update', async (ctx, next) => {
+router.post('/update', loginCheck, async (ctx, next) => {
   const val = await update(ctx.query.id, ctx.request.body);
   if (val) {
       ctx.body = new SuccessModel();
