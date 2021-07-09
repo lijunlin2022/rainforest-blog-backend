@@ -33,7 +33,7 @@ router.post("/new", loginCheck, async (ctx, next) => {
   ctx.body = new SuccessModel(data);
 });
 
-router.post('/update', loginCheck, async (ctx, next) => {
+router.post("/update", loginCheck, async (ctx, next) => {
   const val = await update(ctx.query.id, ctx.request.body);
   if (val) {
       ctx.body = new SuccessModel();

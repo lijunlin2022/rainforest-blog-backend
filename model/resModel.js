@@ -19,7 +19,12 @@ class SuccessModel extends BaseModel {
     // 如果只有 message
     else if (typeof code === "string") {
       super(200, null, code);
-    } else {
+    }
+    // 如果什么都没有
+    else if (typeof code === "undefined") {
+      super(200, null, null);
+    }
+    else {
       super(code, data, message);
     }
   }
@@ -34,7 +39,12 @@ class ErrorModel extends BaseModel {
     // 如果只有 message
     else if (typeof code === "string") {
       super(500, null, code);
-    } else {
+    }
+    // 如果什么都没有
+    else if (typeof code === "undefined") {
+      super(500, null, null);
+    }
+    else {
       super(code, data, message);
     }
   }
