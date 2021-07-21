@@ -10,7 +10,10 @@ router.post("/login", async function (ctx, next) {
     // 设置 session
     ctx.session.username = data.username;
     ctx.session.realname = data.realname;
-    ctx.body = new SuccessModel("登录成功");
+    const successInfo = {
+      username: data.username,
+    };
+    ctx.body = new SuccessModel(successInfo, "登录成功");
     return;
   }
   ctx.body = new ErrorModel("登录失败");
