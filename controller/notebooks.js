@@ -1,4 +1,4 @@
-const xss = require("xss");
+const { htmlEncode } = require("../utils/htmlUtils");
 const { exec, escape } = require("../db/mysql");
 
 /**
@@ -35,8 +35,10 @@ const getDetail = async (id) => {
  * @returns
  */
 const add = async (data = {}) => {
-  const name = xss(data.name);
-  const description = xss(data.description);
+  let { name, description } = data;
+  name = htmlEncode(name);
+  description = htmlEncode(data.description);
+
   const created_time = Date.now();
   const updated_time = Date.now();
 
@@ -58,8 +60,10 @@ const add = async (data = {}) => {
  * @returns
  */
 const update = async (id, data = {}) => {
-  const name = xss(data.name);
-  const description = xss(data.description);
+  let { name, description } = data;
+  name = htmlEncode(data.name);
+  description = htmlEncode(data.description);
+  
   const updated_time = Date.now();
 
   let sql = `update notebooks set `

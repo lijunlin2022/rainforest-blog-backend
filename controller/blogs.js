@@ -1,4 +1,4 @@
-const xss = require("xss");
+const { htmlEncode } = require("../utils/htmlUtils");
 const { exec, escape } = require("../db/mysql");
 
 /**
@@ -54,13 +54,13 @@ const getDetail = async (id, pid, title) => {
  * @returns 
  */
 const add = async (blogData = {}) => {
-    const pid = blogData.pid;
-    const title = xss(blogData.title);
-    const abstract = xss(blogData.abstract);
-    const content = xss(blogData.content);
+    let { pid, title, abstract, content, author } = blogData;
+    title = htmlEncode(title);
+    abstract = htmlEncode(abstract);
+    content = htmlEncode(content);
+
     const created_time = Date.now();
     const updated_time = Date.now();
-    const author = blogData.author;
 
     let sql = `insert into blogs (notebook_id, title, abstract, content, created_time, updated_time, author) values (`
                 + `${pid}` + ","
@@ -82,9 +82,11 @@ const add = async (blogData = {}) => {
  * @returns 
  */
 const update = async (id, blogData = {}) => {
-    const title = xss(blogData.title);
-    const abstract = xss(blogData.abstract);
-    const content = xss(blogData.content);
+    let { title, abstract, content } = blogData;
+    title = htmlEncode(title);
+    abstract = htmlEncode(abstract);
+    content = htmlEncode(content);
+    
     const updated_time = Date.now();
 
     let sql = `update blogs set `
