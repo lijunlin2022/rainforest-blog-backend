@@ -12,7 +12,7 @@ const getList = async (current, size, keyword) => {
     if (keyword) {
       sql += `and name like '%${keyword}%' `;
     }
-    sql += `order by updated_time desc `;
+    sql += `order by name asc `;
     if (current && size) {
         current *= size;
         sql += `limit ${current}, ${size}`;

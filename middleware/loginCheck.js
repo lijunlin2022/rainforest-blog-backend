@@ -5,5 +5,5 @@ module.exports = async (ctx, next) => {
     await next();
     return;
   }
-  ctx.body = new ErrorModel("未登录", 401);
+  ctx.body = new ErrorModel(401, "未登录");
 }
