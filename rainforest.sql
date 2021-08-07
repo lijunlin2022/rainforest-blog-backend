@@ -10,7 +10,7 @@ CREATE TABLE `notebooks`(
   PRIMARY KEY(id)
 );
 
-CREATE TABLE `blogs`(
+CREATE TABLE `notes`(
   `id` INT AUTO_INCREMENT NOT NULL,
   `notebook_id` INT NOT NULL,
   `title` VARCHAR(255),
@@ -30,4 +30,6 @@ CREATE TABLE users(
   PRIMARY KEY(id)
 );
 
-INSERT INTO `notebooks` VALUES (NULL, "pages", "默认创建的数据库, 里面的文章会展示在博客导航栏", 1625068317105, 1625068317105);
+INSERT INTO `notebooks` VALUES (NULL, "PAGES", "PAGES 为 Rainforest Blog 默认 Notebook", 1625068317105, 1625068317105);
+INSERT INTO `notes` VALUES (NULL, 1, "README", "PAGES Notebook 的 README", "# README", 1625068317105, 1625068317105, "rainforest");
+INSERT INTO `notes` VALUES (NULL, 1, "PROFILE", "PROFILE 为 Rainforest Blog 默认 Note, 将展示在首页", "# 欢迎访问 Rainforest Blog", 1625068317105, 1625068317105, "rainforest");

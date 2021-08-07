@@ -10,7 +10,7 @@ const session = require('koa-generic-session');
 const redisStore = require('koa-redis');
 
 const notebooks = require("./routes/notebooks");
-const blogs = require('./routes/blogs')
+const notes = require('./routes/notes')
 const users = require('./routes/users')
 
 const { REDIS_CONF } = require('./conf/db')
@@ -49,7 +49,7 @@ app.use(session({
 
 // routes
 app.use(notebooks.routes(), notebooks.allowedMethods());
-app.use(blogs.routes(), blogs.allowedMethods());
+app.use(notes.routes(), notes.allowedMethods());
 app.use(users.routes(), users.allowedMethods());
 
 // error-handling
