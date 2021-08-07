@@ -1,39 +1,7 @@
 const { htmlEncode } = require("../utils/htmlUtils");
 const { exec, escape } = require("../db/mysql");
 
-/**
- * @param {Number} current
- * @param {Number} size
- * @param {String} keyword
- * @returns
- */
-const getList = async (current, size, keyword) => {
-    let sql = `select * from notebooks where 1 = 1 `;
-    if (keyword) {
-      sql += `and name like '%${keyword}%' `;
-    }
-    sql += `order by name asc `;
-    if (current && size) {
-        current *= size;
-        sql += `limit ${current}, ${size}`;
-    }
-    return await exec(sql);
-};
-
-/**
- * @param {Number} id
- * @returns
- */
-const getDetail = async (id) => {
-  let sql = `select * from notebooks where id = ${id}`;
-  const rows = await exec(sql);
-  return rows[0];
-}
-
-/**
- * @param {Object} data
- * @returns
- */
+// 增加
 const add = async (data = {}) => {
   let { name, description } = data;
   name = htmlEncode(name);
@@ -54,11 +22,9 @@ const add = async (data = {}) => {
   };
 }
 
-/**
- * @param {Number} id
- * @param {Object} data
- * @returns
- */
+// 删除
+
+// 修改
 const update = async (id, data = {}) => {
   let { name, description } = data;
   name = htmlEncode(data.name);
@@ -77,6 +43,34 @@ const update = async (id, data = {}) => {
   }
   return false;
 }
+
+// 查询单个
+const getDetail = async (id) => {
+  let sql = `select * from notebooks where id = ${id}`;
+  const rows = await exec(sql);
+  return rows[0];
+}
+
+// 查询多个
+const getList = async (options) => {
+  const defaults = {
+    keyword: null,
+    current: 0,
+    size: 10,
+  };
+  Object.assign(defaults, options);
+
+  let sql = `select * from notebooks where 1 = 1 `;
+  if (defaults.keyword != null) {
+    sql += `and name like '%${defaults.keyword}%' `;
+  }
+  sql += `order by name asc `;
+  if (defaults.current != null && defaults.size != null) {
+      defaults.current *= defaults.size;
+      sql += `limit ${defaults.current}, ${defaults.size}`;
+  }
+  return await exec(sql);
+};
 
 module.exports = {
   getList,
