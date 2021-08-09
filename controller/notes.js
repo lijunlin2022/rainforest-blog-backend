@@ -72,7 +72,8 @@ const getList = async (options) => {
         current: 0,
         size: 10,
         author: null,
-        keyword: null
+        keyword: null,
+        sortMode: "lastUpdate"
     };
     Object.assign(defaults, options);
 
@@ -87,7 +88,11 @@ const getList = async (options) => {
     if (defaults.keyword != null) {
         sql += `and title like '%${defaults.keyword}%' `;
     }
-    sql += `order by title asc `;
+    if (defaults.sortMode === "name") {
+        sql += `order by title asc `;
+    } else {
+        sql += `order by updated_time desc `;
+    }
     if (defaults.current != null && defaults.size != null) {
         defaults.current *= defaults.size;
         sql += `limit ${defaults.current}, ${defaults.size}`;
