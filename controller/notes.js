@@ -59,8 +59,23 @@ const update = async (id, noteData = {}) => {
 }
 
 // 查询单个
-const getDetail = async (id) => {
-    let sql = `select * from notes where 1 = 1 and id = ${id}`;
+const getDetail = async (queryData) => {
+    const defaults = {
+        id: 1,
+        pid: null,
+        title: null,
+    };
+    Object.assign(defaults, queryData);
+    let sql = `select * from notes where 1 = 1 `;
+    if (defaults.id) {
+        sql += `and id = ${defaults.id} `;
+    }
+    if (defaults.pid) {
+        sql += `and notebook_id = ${defaults.pid} `;
+    }
+    if (defaults.title) {
+        sql += `and title = '${defaults.title}'`;
+    }
     const rows = await exec(sql);
     return rows[0];
 }

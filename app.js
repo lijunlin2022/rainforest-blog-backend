@@ -39,7 +39,7 @@ app.use(session({
   cookie: {
     path: '/',
     httpOnly: true,
-    maxAge: 1000
+    maxAge: 1000 * 60 * 60 * 3
   },
   // 配置 redis
   store: redisStore({

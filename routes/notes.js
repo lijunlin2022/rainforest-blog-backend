@@ -39,9 +39,9 @@ router.patch("/:id", loginCheck, async (ctx, next) => {
 });
 
 // 查询单个
-router.get("/:id", async (ctx, next) => {
-  const id = ctx.params.id;
-  const data = await getDetail(id);
+router.post("/", async (ctx, next) => {
+  const queryData = ctx.request.body;
+  const data = await getDetail(queryData);
   ctx.body = new SuccessModel(data);
 });
 
