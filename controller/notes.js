@@ -8,16 +8,16 @@ const add = async (noteData = {}) => {
     abstract = htmlEncode(abstract);
     content = htmlEncode(content);
 
-    const created_time = Date.now();
-    const updated_time = Date.now();
+    const createdTime = Date.now();
+    const updatedTime = Date.now();
 
     let sql = `insert into notes (notebook_id, title, abstract, content, created_time, updated_time, author) values (`
                 + `${pid}` + ","
                 + escape(title) + ","
                 + escape(abstract) + ","
                 + escape(content) + ","
-                + `${created_time}` + ","
-                + `${updated_time}` + ","
+                + `${createdTime}` + ","
+                + `${updatedTime}` + ","
                 + escape(author) + ")";
     const insertData = await exec(sql);
     return {
@@ -43,13 +43,13 @@ const update = async (id, noteData = {}) => {
     abstract = htmlEncode(abstract);
     content = htmlEncode(content);
     
-    const updated_time = Date.now();
+    const updatedTime = Date.now();
 
     let sql = `update notes set `
                 + "title=" + escape(title) + ","
                 + "abstract=" + escape(abstract) + ","
                 + "content=" + escape(content) + ","
-                + `updated_time=${updated_time} `
+                + `updated_time=${updatedTime} `
                 + "where id=" + id;
     const updateData = await exec(sql);
     if (updateData.affectedRows > 0) {
@@ -77,7 +77,7 @@ const getList = async (options) => {
     };
     Object.assign(defaults, options);
 
-    let sql = `select id, title, abstract, updated_time, created_time from notes where 1 = 1 `;
+    let sql = `select id, notebook_id, title, abstract, updated_time, created_time from notes where 1 = 1 `;
 
     if (defaults.pid != null) {
         sql += `and notebook_id = ${defaults.pid} `;

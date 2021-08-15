@@ -7,14 +7,14 @@ const add = async (data = {}) => {
   name = htmlEncode(name);
   description = htmlEncode(data.description);
 
-  const created_time = Date.now();
-  const updated_time = Date.now();
+  const createdTime = Date.now();
+  const updatedTime = Date.now();
 
   let sql = `insert into notebooks (name, description, created_time, updated_time) values (`
             + escape(name) + `,`
             + escape(description) + `,`
-            + `${created_time}` + `,`
-            + `${updated_time}` + `)`;
+            + `${createdTime}` + `,`
+            + `${updatedTime}` + `)`;
 
   const insertData = exec(sql);
   return {
@@ -30,12 +30,12 @@ const update = async (id, data = {}) => {
   name = htmlEncode(data.name);
   description = htmlEncode(data.description);
   
-  const updated_time = Date.now();
+  const updatedTime = Date.now();
 
   let sql = `update notebooks set `
             + `name = ` + escape(name) + `,`
             + `description = ` + escape(description) + `,`
-            + `updated_time = ${updated_time} `
+            + `updated_time = ${updatedTime} `
             + `where id = ${id}`;
   const updateData = await exec(sql);
   if (updateData.affectedRows > 0) {

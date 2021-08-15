@@ -17,19 +17,19 @@ router.post("/new", loginCheck, async (ctx, next) => {
 });
 
 // 删除
-router.post('/del', async (ctx, next) => {
-  const id = ctx.query.id
-  const author = ctx.session.username
-  const val = await delNote(id, author)
+router.post('/del', loginCheck, async (ctx, next) => {
+  const id = ctx.query.id;
+  const author = ctx.session.username;
+  const val = await delNote(id, author);
   if (val) {
-    ctx.body = new SuccessModel()
+    ctx.body = new SuccessModel();
   } else {
-    ctx.body = new ErrorModel('删除博客失败')
+    ctx.body = new ErrorModel("删除博客失败");
   }
-})
+});
 
 // 修改
-router.patch("/:id", async (ctx, next) => {
+router.patch("/:id", loginCheck, async (ctx, next) => {
   const val = await update(ctx.params.id, ctx.request.body);
   if (val) {
       ctx.body = new SuccessModel();
