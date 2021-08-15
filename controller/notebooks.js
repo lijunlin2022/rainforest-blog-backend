@@ -56,7 +56,7 @@ const getList = async (options) => {
   const defaults = {
     keyword: null,
     current: 0,
-    size: 10,
+    size: 9,
     sortMode: "lastUpdate",
   };
   Object.assign(defaults, options);
