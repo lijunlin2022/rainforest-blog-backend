@@ -9,6 +9,32 @@ const { isDir, isDuplicatedNameDirForSameParent } = require('../utils/isExisted.
 
 router.prefix('/dir')
 
+// 查找多个
+router.post('/list', async (ctx) => {
+  const defaults = {
+    dirType: 1,
+    pDIrId: '',
+    state: 0
+  }
+  const body = ctx.request.body
+
+  const params = { dirType, state, pDirId } = body
+  Object.assign(defaults, params)
+  const { page, skipIndex } = util.pager(body)
+
+  const findRes = Dir.find(defaults)
+  
+  const list = await findRes.skip(skipIndex).limit(page.size)
+  const total = await Dir.countDocuments(findRes)
+  ctx.body = util.success({
+    page: {
+      ...page,
+      total
+    },
+    list
+  })
+})
+
 // 增加
 router.post('/add', async (ctx) => {
   try {
@@ -70,37 +96,6 @@ router.post('/item', async (ctx) => {
     })
   } catch (e) {
     ctx.body = util.fail(`参数传递错误, ${e}`)
-  }
-})
-
-// 查找多个
-router.post('/list', async (ctx) => {
-  try {
-    const { dirName, dirType, state, pDirId } = ctx.request.body
-    const { page, skipIndex } = util.pager(ctx.request.body)
-    const obj = { dirName, dirType, state, pDirId }
-
-    // 过滤 obj 中值 为 undefined 和 null 的项目, 得到 options
-    const options = {}
-    for (const key in obj) {
-      if (obj[key] !== undefined && obj[key] !== null) {
-        options[key] = obj[key]
-      }
-    }
-
-    const res = Dir.find(options)
-    const list = await res.skip(skipIndex).limit(page.size)
-    const total = await Dir.countDocuments(res)
-
-    ctx.body = util.success({
-      page: {
-        ...page,
-        total
-      },
-      list
-    })
-  } catch (e) {
-    ctx.body = util.fail(`参数错误 ${e}`)
   }
 })
 

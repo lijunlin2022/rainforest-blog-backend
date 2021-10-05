@@ -7,7 +7,7 @@ const CODE = {
   PARAM_ERROR: 10001,           // 参数错误
   USER_ACCOUNT_ERROR: 20001,    // 账号或者密码错误
   USER_LOGIN_ERROR: 30001,      // 用户未登录
-  BUSINESS_ERROR: 40001,        // 业务请求失败
+  BUSINESS_ERROR: 400,        // 业务请求失败
   AUTH_ERROR: 50001             // 认证失败或者 TOKEN 过期
 }
 
@@ -18,7 +18,7 @@ module.exports = {
    * @param {number} size
    * @returns 
    */
-  pager ({ current= 1, size = 10 }) {
+  pager ({ current = 1, size = 10 }) {
     current *= 1
     size *= 1
     const skipIndex = (current - 1) * size

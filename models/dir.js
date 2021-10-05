@@ -16,7 +16,7 @@ const dirSchema = mongoose.Schema({
     default: ''
   },
   state: {
-    type: Number,           // 删除类型: 0 -> 未删除; 1 -> 回收箱; 2 -> 完全删除 
+    type: Number,           // 删除类型: 0 -> 未删除; 1 -> 回收箱;
     default: 0
   },
   viewed: {                 // 阅读次数
