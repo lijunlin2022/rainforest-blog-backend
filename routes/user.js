@@ -12,23 +12,17 @@ router.prefix('/user')
 
 // 登录
 router.post('/login', async (ctx) => {
-  try {
-    const params = { username, password } = ctx.request.body
-    const res = await User.findOne(params)
-    const data = res._doc
+  const { username, password } = ctx.request.body
+  const res = await User.findOne({ username, password: md5(password) })
 
+  if (res) {
+    const uname = res._doc.username
     const token = jwt.sign(
-      { data: data}, 'rainforest', { expiresIn: '1h' }
+      { data: uname }, 'rainforest', { expiresIn: '1h' }
     )
-
-    if (res) {
-      data.token = token
-      ctx.body = util.success(data)
-    } else {
-      ctx.body = util.fail('用户名或密码不正确')
-    }
-  } catch (e) {
-    ctx.body = util.fail(e.msg)
+    ctx.body = util.success({ uname, token })
+  } else {
+    ctx.body = util.fail('用户名或密码不正确')
   }
 })
 
