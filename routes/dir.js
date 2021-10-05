@@ -37,30 +37,25 @@ router.post('/list', async (ctx) => {
 
 // 增加
 router.post('/add', async (ctx) => {
-  try {
-    const params = { dirName, dirType, description, pDirId, pDIrName } = ctx.request.body
-    const dir = new Dir(params)
+  const params = { dirName, dirType, description, pDirId, pDirName } = ctx.request.body
 
-    // 判断是否有符合该 id 的 父文件夹
-    if (pDirId) {
-      if (await isDir(pDirId) === false) {
-        ctx.body = util.fail('找不到符合该 id 的父文件夹')
-        return
-      }
-    }
-
-    // 判断同级目录下是否有同名的文件夹
-    if (await isDuplicatedNameDirForSameParent(pDirId, dirName) === true) {
-      ctx.body = util.fail('同级目录下有重名的文件夹')
+  // 判断是否有符合该 id 的 父文件夹
+  if (pDirId) {
+    if (await isDir(pDirId) === false) {
+      ctx.body = util.fail('找不到符合该 id 的父文件夹')
       return
     }
-
-    const { _id } = await dir.save()
-    ctx.body = util.success({ _id }, '文件夹创建成功')
-
-  } catch (e) {
-    ctx.body = util.fail(e.stack)
   }
+
+  // 判断同级目录下是否有同名的文件夹
+  if (await isDuplicatedNameDirForSameParent(pDirId, dirName) === true) {
+    ctx.body = util.fail('同级目录下有重名的文件夹')
+    return
+  }
+
+  const dir = new Dir(params)
+  const { _id } = await dir.save()
+  ctx.body = util.success({ _id }, '文件夹创建成功')
 })
 
 // 删除 (可以删除单个也可以删除多个)
@@ -84,20 +79,7 @@ router.post('/delete', async (ctx) => {
   }
 })
 
-// 查找单个
-router.post('/item', async (ctx) => {
-  try {
-    const params = ctx.request.body
-    const data = await Dir.findOne(params)
-    ctx.body = util.success(data)
-    // 统计阅读次数
-    await Dir.findByIdAndUpdate(_id, {
-      $inc: { viewed: 1 }
-    })
-  } catch (e) {
-    ctx.body = util.fail(`参数传递错误, ${e}`)
-  }
-})
+
 
 // 修改单个
 router.post('/update', async (ctx) => {

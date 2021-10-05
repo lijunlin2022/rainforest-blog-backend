@@ -6,7 +6,10 @@ const dirSchema = mongoose.Schema({
     type: Number,           // 文件夹类型: 0: repository(仓库), 1: directory(仓库中的普通文件夹)
     default: 0
   },
-  description: String,
+  description: {
+    type: String,
+    default: ''
+  },
   pDirId: {
     type: String,
     default: ''
@@ -23,11 +26,11 @@ const dirSchema = mongoose.Schema({
     type: Number,
     default: 0
   },
-  'createTime': {
+  createTime: {
     type: Date,
     default: Date.now()
   },
-  'updateTime': {
+  updateTime: {
     type: Date,
     default: Date.now()
   }
