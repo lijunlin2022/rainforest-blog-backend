@@ -1,19 +1,18 @@
 const Koa = require('koa')
 const app = new Koa()
-const views = require('koa-views')
 const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const koaJwt = require('koa-jwt')
 
-const session = require('koa-generic-session');
-const redisStore = require('koa-redis');
+require('./db/mongoose.js')
 
-const notebooks = require("./routes/notebooks");
-const notes = require('./routes/notes')
-const users = require('./routes/users')
+const user = require('./routes/user.js')
+const dir = require('./routes/dir.js')
+const file = require('./routes/file.js')
+const repComment = require('./routes/repComment.js')
 
-const { REDIS_CONF } = require('./conf/db')
 // error handler
 onerror(app)
 
@@ -21,36 +20,24 @@ onerror(app)
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
+
 app.use(json())
 app.use(logger())
-
-// logger
-app.use(async (ctx, next) => {
-  const start = new Date()
-  await next()
-  const ms = new Date() - start
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
-})
-
-// session 配置
-app.keys = ["Wx12_45R#sdsd_$"];
-app.use(session({
-  // 配置 cookie
-  cookie: {
-    path: '/',
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 3
-  },
-  // 配置 redis
-  store: redisStore({
-    all: `${REDIS_CONF.host}:${REDIS_CONF.port}`
-  })
-}));
+app.use(koaJwt({ secret: 'rainforest' }).unless({
+  path:[
+    /^\/user\/login/,
+    /^\/dir\/list/,
+    /^\/dir\/item/,
+    /^\/file\/list/,
+    /^\/file\/item/
+  ]
+}))
 
 // routes
-app.use(notebooks.routes(), notebooks.allowedMethods());
-app.use(notes.routes(), notes.allowedMethods());
-app.use(users.routes(), users.allowedMethods());
+app.use(user.routes(), user.allowedMethods())
+app.use(dir.routes(), dir.allowedMethods())
+app.use(file.routes(), file.allowedMethods())
+app.use(repComment.routes(), repComment.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
