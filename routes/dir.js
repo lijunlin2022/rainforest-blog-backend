@@ -58,6 +58,18 @@ router.post('/add', async (ctx) => {
   ctx.body = util.success({ _id }, '文件夹创建成功')
 })
 
+// 修改
+router.post('/update', async (ctx) => {
+    const { _id, dirName, dirType, description, state } = ctx.request.body
+    const updateTime = Date.now()
+
+    await Dir.updateOne({ _id }, {
+      $set: { dirName, dirType, description, state, updateTime }
+    })
+
+    ctx.body = util.success('', '文件夹更新成功')
+})
+
 // 删除 (可以删除单个也可以删除多个)
 router.post('/delete', async (ctx) => {
   try {
@@ -81,28 +93,6 @@ router.post('/delete', async (ctx) => {
 
 
 
-// 修改单个
-router.post('/update', async (ctx) => {
-  try {
-    const { _id, dirName, dirType, description, pDirId, state } = ctx.request.body
-    const updateTime = Date.now()
 
-    // 如果 pDirId 存在, 则进一步判断 pDirId 是否合法
-    if (pDirId) {
-      if (await isDir(pDirId) === false) {
-        ctx.body = util.fail('找不到符合该 id 的父文件夹')
-        return
-      }
-    }
-
-    await Dir.updateOne({ _id }, {
-      $set: { dirName, dirType, description, pDirId, state, updateTime }
-    })
-
-    ctx.body = util.success('', '文件夹更新成功')
-  } catch (e) {
-    ctx.body = util.fail(`参数传递错误, ${e}`)
-  }
-})
 
 module.exports = router
