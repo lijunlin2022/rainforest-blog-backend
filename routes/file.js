@@ -97,6 +97,30 @@ router.post('/add', async (ctx) => {
   ctx.body = util.success({ _id }, '文件创建成功')
 })
 
+// 修改单个
+router.post('/update', async (ctx) => {
+    const { _id, filename, fileType, abstract, content, pDirId, pDirName, state } = ctx.request.body
+    const updateTime = Date.now()
+
+    // 如果没有父文件夹
+    if (!pDirId) {
+      ctx.body = util.fail('文件必须放到文件夹中')
+      return
+    }
+
+    // 判断是否有符合该 id 的父文件夹
+    if (isDir(pDirId) === false) {
+      ctx.body = util.fail('找不到符合该 id 的父文件夹')
+      return
+    }
+
+    await File.updateOne({ _id }, {
+      $set: { filename, fileType, abstract, content, pDirId, pDirName, state, updateTime }
+    })
+
+    ctx.body = util.success('', '文件更新成功')
+})
+
 // 删除 (可以删除单个也可以删除多个)
 router.post('/delete', async (ctx) => {
   try {
@@ -117,35 +141,5 @@ router.post('/delete', async (ctx) => {
   }
 })
 
-
-
-// 修改单个
-router.post('/update', async (ctx) => {
-  try {
-    const { _id, filename, fileType, abstract, content, pDirId, state } = ctx.request.body
-    console.log(_id, filename, fileType, abstract, content, pDirId, state)
-    const updateTime = Date.now()
-
-    // 如果没有父文件夹
-    if (!pDirId) {
-      ctx.body = util.fail('文件必须放到文件夹中')
-      return
-    }
-
-    // 判断是否有符合该 id 的父文件夹
-    if (isDir(pDirId) === false) {
-      ctx.body = util.fail('找不到符合该 id 的父文件夹')
-      return
-    }
-
-    await File.updateOne({ _id }, {
-      $set: { filename, fileType, abstract, content, pDirId, state, updateTime }
-    })
-
-    ctx.body = util.success('', '文件更新成功')
-  } catch (e) {
-    ctx.body = util.fail(`参数传递错误, ${e}`)
-  }
-})
 
 module.exports = router
