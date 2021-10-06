@@ -123,22 +123,9 @@ router.post('/update', async (ctx) => {
 
 // 删除 (可以删除单个也可以删除多个)
 router.post('/delete', async (ctx) => {
-  try {
-    const { _ids } = ctx.request.body
-    for (let i = 0; i < _ids.length; i++) {
-      if (isFile(_ids[i]) === false) {
-        ctx.body = util.fail(`找不到 id 为 ${_ids[i]} 的文件`)
-        return
-      }
-      await File.updateOne(
-        { _id: _ids[i] },
-        { $set: { state: 1 } }
-      )
-    }
+    const { _id } = ctx.request.body
+    await File.findByIdAndDelete(_id)
     ctx.body = util.success('', '删除成功')
-  } catch (e) {
-    ctx.body = util.fail(`参数传递错误, ${e}`)    
-  }
 })
 
 
