@@ -12,27 +12,42 @@ router.prefix('/dir')
 
 // 查找多个
 router.post('/list', async (ctx) => {
+  const body = ctx.request.body
+  const params = { dirType, state, pDirId } = body
+  const { current, size } = body
+  const { sortMode = 'dirName' } = body
+
   const defaults = {
     pDIrId: '',
     state: 0
   }
-  const body = ctx.request.body
-
-  const params = { dirType, state, pDirId } = body
   Object.assign(defaults, params)
-  const { page, skipIndex } = util.pager(body)
 
-  const findRes = Dir.find(defaults)
   
-  const list = await findRes.skip(skipIndex).limit(page.size)
-  const total = await Dir.countDocuments(findRes)
-  ctx.body = util.success({
-    page: {
-      ...page,
-      total
-    },
-    list
-  })
+  // 如果没有传递分页
+  if (!current || !size) {
+    const findRes = await Dir.find(defaults).sort(sortMode)
+    const total = await Dir.countDocuments(findRes)
+    ctx.body = util.success({
+      page: {
+        total
+      },
+      list: findRes
+    })
+  } else {
+    // 如果传递了分页
+    const findRes = Dir.find(defaults)
+    const total = await Dir.countDocuments(findRes)
+    const { page, skipIndex } = util.pager(body)
+    const list = await findRes.skip(skipIndex).limit(page.size).sort(sortMode)
+    ctx.body = util.success({
+      page: {
+        ...page,
+        total
+      },
+      list
+    })
+  }
 })
 
 // 增加
