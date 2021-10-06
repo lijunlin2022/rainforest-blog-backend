@@ -94,7 +94,7 @@ router.post('/add', async (ctx) => {
 
   const { _id } = await file.save()
 
-  ctx.body = util.success(_id, '文件创建成功')
+  ctx.body = util.success({ _id }, '文件创建成功')
 })
 
 // 删除 (可以删除单个也可以删除多个)
