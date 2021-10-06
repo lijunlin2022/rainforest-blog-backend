@@ -4,6 +4,7 @@
 
 const router = require('koa-router')()
 const Dir = require('../models/dir.js')
+const File = require('../models/file.js')
 const util = require('../utils/index.js')
 const { isDir, isDuplicatedNameDirForSameParent } = require('../utils/isExisted.js')
 
@@ -12,7 +13,6 @@ router.prefix('/dir')
 // 查找多个
 router.post('/list', async (ctx) => {
   const defaults = {
-    dirType: 1,
     pDIrId: '',
     state: 0
   }
@@ -70,29 +70,16 @@ router.post('/update', async (ctx) => {
     ctx.body = util.success('', '文件夹更新成功')
 })
 
-// 删除 (可以删除单个也可以删除多个)
+// 删除
 router.post('/delete', async (ctx) => {
-  try {
-    const { _ids } = ctx.request.body
-    console.log(_ids)
-    for (let i = 0; i < _ids.length; i++) {
-      if (await isDir(_ids[i]) === false) {
-        ctx.body = util.fail(`找不到 id 为 ${_ids[i]} 的文件夹`)
-        return
-      }
-      await Dir.updateOne(
-        { _id: _ids[i] },
-        { $set: { state: 1 } }
-      )
-    }
-    ctx.body = util.success('', '删除成功')
-  } catch (e) {
-    ctx.body = util.fail(`参数传递错误, ${e}`)    
-  }
+  const { _id } = ctx.request.body
+  // 删除文件夹本身
+  await Dir.findByIdAndDelete(_id)
+  // 删除文件夹下所有的文件夹
+  await Dir.remove({ pDirId: _id })
+  // 删除文件夹下的所有文件
+  await File.remove({ pDirId: _id })
+  ctx.body = util.success('', '删除成功')
 })
-
-
-
-
 
 module.exports = router
